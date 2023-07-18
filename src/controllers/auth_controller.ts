@@ -14,7 +14,7 @@ const getPersons = async (req: Request, res: Response) => {
   })
 }
 const getAssistants = async (req: Request, res: Response) => {
-  const users = await PersonModel.findAll({ where: { attendance: true } })
+  const users = await PersonModel.findAll({ where: { training: true } })
   res.status(200).json({
     ok: true,
     data: users,
@@ -30,42 +30,11 @@ const getPerson = async (req: Request, res: Response) => {
       error: 'La persona ya ha sido registrada',
     })
   } else {
-    request(
-      'https://apiservices.manabi.gob.ec/persona/registrocivil/datosdemograficos/' +
-        cedula,
-      async (err, response, body) => {
-        const person = JSON.parse(body)
-        if (err) {
-          console.log(err + 'Error al consultar datos de la persona')
-          return res.status(500).json({
-            ok: false,
-            error: 'No se pudo consultar los datos',
-          })
-        }
-        if (person.nombre == null) {
-          return res.status(500).json({
-            ok: false,
-            error: 'El numero de cedula esta incorrecto o la persona no existe',
-          })
-        }
-        const usuario = new PersonModel({
-          id: 1,
-          cedula: cedula,
-          name: person.nombre,
-          email: person.email,
-          home: person.domicilio,
-          age: calcularEdad(person.fechaNacimiento),
-          institution: person.institucion,
-          position: person.position,
-        })
-
-        res.json({
-          ok: true,
-          data: usuario,
-          // token
-        })
-      }
-    )
+    res.json({
+      ok: true,
+      //data: usuario,
+      // token
+    })
   }
 }
 
@@ -86,102 +55,113 @@ function calcularEdad(fecha: String) {
   return edad
 }
 
-const createPerson = async (req: Request, res: Response) => {
-  const { cedula, name, email, home, age, institution, position, cellphone } =
-    req.body
+// const createPerson = async (req: Request, res: Response) => {
+//   const { cedula, name, email, home, age, institution, position, cellphone } =
+//     req.body
 
-  try {
-    console.log('Debug3')
-    const existePerson = await PersonModel.findOne({
-      where: { cedula: cedula },
-    })
+//   try {
+//     console.log('Debug3')
+//     const existePerson = await PersonModel.findOne({
+//       where: { cedula: cedula },
+//     })
 
-    console.log(existePerson)
+//     console.log(existePerson)
 
-    if (existePerson) {
-      console.log('Actualizo datos')
-      return res.status(500).json({
-        ok: false,
-        error: 'La persona ya ha sido registrada con anterioridad',
-        user: existePerson,
-      })
-    }
+//     if (existePerson) {
+//       console.log('Actualizo datos')
+//       return res.status(500).json({
+//         ok: false,
+//         error: 'La persona ya ha sido registrada con anterioridad',
+//         user: existePerson,
+//       })
+//     }
 
-    const person = new PersonModel({
-      name: name,
-      cedula: cedula,
-      home: home,
-      cellphone: cellphone,
-      age: age,
-      email: email,
-      institution: institution,
-      position: position,
-    })
-    const personNew = await person.save()
-    sendMail(email, name)
-    res.json({
-      ok: true,
-      data: personNew,
-      // token
-    })
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      ok: false,
-      error: error,
-    })
-  }
-}
-const getPreinscripcion = async (req: Request, res: Response) => {
-  const { cedula } = req.body
-  const person = await PersonModel.findOne({ where: { cedula: cedula } })
-  if (person) {
-    return res.status(200).json({
-      ok: true,
-      data: person,
-    })
-  } else {
-    request(
-      'https://apiservices.manabi.gob.ec/persona/registrocivil/datosdemograficos/' +
-        cedula,
-      async (err, response, body) => {
-        const person = JSON.parse(body)
-        if (err) {
-          console.log(err + 'Error al consultar datos de la persona')
-          return res.status(500).json({
-            ok: false,
-            error: 'No se pudo consultar los datos',
-          })
-        }
-        if (person.nombre == null) {
-          return res.status(500).json({
-            ok: false,
-            error: 'El numero de cedula esta incorrecto o la persona no existe',
-          })
-        }
-        const usuario = new PersonModel({
-          id: 1,
-          cedula: cedula,
-          name: person.nombre,
-          email: person.email,
-          home: person.domicilio,
-          age: calcularEdad(person.fechaNacimiento),
-          institution: person.institucion,
-          position: person.position,
-        })
+//     const person = new PersonModel({
+//       name: name,
+//       cedula: cedula,
+//       home: home,
+//       cellphone: cellphone,
+//       age: age,
+//       email: email,
+//       institution: institution,
+//       position: position,
+//     })
+//     const personNew = await person.save()
+//     sendMail(email, name)
+//     res.json({
+//       ok: true,
+//       data: personNew,
+//       // token
+//     })
+//   } catch (error) {
+//     console.log(error)
+//     res.status(500).json({
+//       ok: false,
+//       error: error,
+//     })
+//   }
+// }
+// const getPreinscripcion = async (req: Request, res: Response) => {
+//   const { cedula } = req.body
+//   const person = await PersonModel.findOne({ where: { cedula: cedula } })
+//   if (person) {
+//     return res.status(200).json({
+//       ok: true,
+//       data: person,
+//     })
+//   } else {
+//     request(
+//       'https://apiservices.manabi.gob.ec/persona/registrocivil/datosdemograficos/' +
+//         cedula,
+//       async (err, response, body) => {
+//         const person = JSON.parse(body)
+//         if (err) {
+//           console.log(err + 'Error al consultar datos de la persona')
+//           return res.status(500).json({
+//             ok: false,
+//             error: 'No se pudo consultar los datos',
+//           })
+//         }
+//         if (person.nombre == null) {
+//           return res.status(500).json({
+//             ok: false,
+//             error: 'El numero de cedula esta incorrecto o la persona no existe',
+//           })
+//         }
+//         const usuario = new PersonModel({
+//           id: 1,
+//           cedula: cedula,
+//           name: person.nombre,
+//           email: person.email,
+//           home: person.domicilio,
+//           age: calcularEdad(person.fechaNacimiento),
+//           institution: person.institucion,
+//           position: person.position,
+//         })
 
-        res.json({
-          ok: true,
-          data: usuario,
-          // token
-        })
-      }
-    )
-  }
-}
+//         res.json({
+//           ok: true,
+//           data: usuario,
+//           // token
+//         })
+//       }
+//     )
+//   }
+// }
 const updatePerson = async (req: Request, res: Response) => {
-  const { cedula, name, email, home, age, institution, position, cellphone } =
-    req.body
+  const {
+    cedula,
+    name,
+    email,
+    cellphone,
+    training,
+    provincia,
+    canton,
+    parroquia,
+    recinto,
+    jrv,
+    nivel,
+  } = req.body
 
   try {
     const person = await PersonModel.findOne({
@@ -189,7 +169,7 @@ const updatePerson = async (req: Request, res: Response) => {
     })
 
     if (person) {
-      person.attendance = true
+      person.training = true
       person.save()
       console.log('Actualizo datos')
       return res.status(200).json({
@@ -198,15 +178,17 @@ const updatePerson = async (req: Request, res: Response) => {
       })
     }
     const newPerson = new PersonModel({
-      attendance: true,
-      name: name,
       cedula: cedula,
-      home: home,
-      cellphone: cellphone,
-      age: age,
+      name: name,
       email: email,
-      institution: institution,
-      position: position,
+      cellphone: cellphone,
+      training: true,
+      provincia: provincia,
+      canton: canton,
+      parroquia: parroquia,
+      recinto: recinto,
+      jrv: jrv,
+      nivel: nivel,
     })
     const personNew = await newPerson.save()
     sendMail(email, name)
@@ -258,11 +240,4 @@ const login = async (req: Request, res: Response) => {
   }
 }
 
-export {
-  getAssistants,
-  createPerson,
-  getPersons,
-  getPerson,
-  getPreinscripcion,
-  updatePerson,
-}
+export { getAssistants, getPersons, updatePerson }

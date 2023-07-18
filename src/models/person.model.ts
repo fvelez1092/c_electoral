@@ -10,7 +10,7 @@ export class PersonModel extends Model {
   age!: string
   email!: string
   cellphone!: string
-  attendance!: boolean
+  training!: boolean
   provincia?: string
   canton?: string
   parroquia?: string
