@@ -4,6 +4,7 @@ import {
   getPersons,
   updatePerson,
   getAssistants,
+  getPerson,
 } from '../controllers/auth_controller'
 import { validateFields } from '../middleware/validator'
 
@@ -13,11 +14,11 @@ router.post(
   [check('cedula', 'Cedula is required').not().isEmpty(), validateFields],
   updatePerson
 )
-// router.post(
-//   '/getPerson',
-//   [check('cedula', 'Cedula is required').not().isEmpty(), validateFields],
-//   getPerson
-// )
+router.post(
+  '/getPerson',
+  [check('cedula', 'Cedula is required').not().isEmpty(), validateFields],
+  getPerson
+)
 // router.post(
 //   '/getPreinscripcion',
 //   [check('cedula', 'Cedula is required').not().isEmpty(), validateFields],

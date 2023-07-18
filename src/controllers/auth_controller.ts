@@ -24,16 +24,15 @@ const getPerson = async (req: Request, res: Response) => {
   const { cedula } = req.body
   const existeCedula = await PersonModel.findOne({ where: { cedula: cedula } })
   if (existeCedula) {
-    console.log('Estamos dentro del la validaiconde cedula')
-    return res.status(500).json({
-      ok: false,
-      error: 'La persona ya ha sido registrada',
-    })
-  } else {
     res.json({
       ok: true,
-      //data: usuario,
-      // token
+      data: existeCedula,
+    })
+    console.log('Estamos dentro del la validaiconde cedula')
+  } else {
+    return res.status(500).json({
+      ok: false,
+      error: 'Persona no registrada',
     })
   }
 }
@@ -240,4 +239,4 @@ const login = async (req: Request, res: Response) => {
   }
 }
 
-export { getAssistants, getPersons, updatePerson }
+export { getPerson, getAssistants, getPersons, updatePerson }
