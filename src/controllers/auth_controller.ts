@@ -24,10 +24,18 @@ const getPerson = async (req: Request, res: Response) => {
   const { cedula } = req.body
   const existeCedula = await PersonModel.findOne({ where: { cedula: cedula } })
   if (existeCedula) {
-    res.json({
-      ok: true,
-      data: existeCedula,
-    })
+    if (existeCedula.training) {
+      res.status(500).json({
+        ok: false,
+        data: 'Persona ya capacitada con anterioridad',
+      })
+    } else {
+      res.json({
+        ok: true,
+        data: existeCedula,
+      })
+    }
+
     console.log('Estamos dentro del la validaiconde cedula')
   } else {
     return res.status(500).json({
@@ -181,7 +189,7 @@ const updatePerson = async (req: Request, res: Response) => {
       name: name,
       email: email,
       cellphone: cellphone,
-      training: true,
+      training: training,
       provincia: provincia,
       canton: canton,
       parroquia: parroquia,
