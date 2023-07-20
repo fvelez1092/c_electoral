@@ -24,10 +24,11 @@ const getPerson = async (req: Request, res: Response) => {
   const { cedula } = req.body
   const existeCedula = await PersonModel.findOne({ where: { cedula: cedula } })
   if (existeCedula) {
-    if (existeCedula.training) {
+    console.log(existeCedula.training)
+    if (existeCedula.training === true) {
       res.status(500).json({
         ok: false,
-        data: 'Persona ya capacitada con anterioridad',
+        error: 'Persona ya capacitada con anterioridad',
       })
     } else {
       res.json({
