@@ -24,8 +24,8 @@ router.post(
 //   [check('cedula', 'Cedula is required').not().isEmpty(), validateFields],
 //   getPreinscripcion
 // )
-router.get('/getPersons', getPersons)
-router.get('/getAssistants', getAssistants)
+router.get('/getPersons/:nivel?', getPersons)
+router.get('/getAssistants/:nivel?', getAssistants)
 
 // router.post(
 //   '/createPerson',

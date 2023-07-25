@@ -7,14 +7,42 @@ import { PersonModel } from '../models/person.model'
 import { generarJWT } from '../jwt/jwt'
 
 const getPersons = async (req: Request, res: Response) => {
-  const users = await PersonModel.findAll()
+  console.log(req.params.nivel)
+  let users: any
+  if (
+    req.params.nivel === 'CANTONAL' ||
+    req.params.nivel === 'PARROQUIAL' ||
+    req.params.nivel === 'RECINTO' ||
+    req.params.nivel === 'JRV'
+  ) {
+    console.log('Estamos dentr del if del nivel' + req.params.nivel)
+    users = await PersonModel.findAll({ where: { nivel: req.params.nivel } })
+  } else {
+    users = await PersonModel.findAll()
+  }
+
   res.status(200).json({
     ok: true,
     data: users,
   })
 }
 const getAssistants = async (req: Request, res: Response) => {
-  const users = await PersonModel.findAll({ where: { training: true } })
+  console.log(req.params.nivel)
+  let users: any
+  if (
+    req.params.nivel === 'CANTONAL' ||
+    req.params.nivel === 'PARROQUIAL' ||
+    req.params.nivel === 'RECINTO' ||
+    req.params.nivel === 'JRV'
+  ) {
+    console.log('Estamos dentr del if del nivel' + req.params.nivel)
+    users = await PersonModel.findAll({
+      where: { nivel: req.params.nivel, training: true },
+    })
+  } else {
+    users = await PersonModel.findAll({ where: { training: true } })
+  }
+  //const users = await PersonModel.findAll({ where: { training: true } })
   res.status(200).json({
     ok: true,
     data: users,
