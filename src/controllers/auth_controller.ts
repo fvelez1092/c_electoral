@@ -49,7 +49,7 @@ const getAssistants = async (req: Request, res: Response) => {
   })
 }
 const getPerson = async (req: Request, res: Response) => {
-  const { cedula } = req.body
+  const { cedula } = req.body 
   const existeCedula = await PersonModel.findOne({ where: { cedula: cedula } })
   if (existeCedula) {
     console.log(existeCedula.training)
